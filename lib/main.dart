@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_ble/flutter_ble.dart';
 
 void main() => runApp(MyApp());
 
@@ -77,7 +80,10 @@ class DiscoverModePage extends StatefulWidget {
 }
 
 class _DiscoverModePageState extends State<DiscoverModePage> {
+  FlutterBle _ble = FlutterBle.instance;
+  StreamSubscription<ScanResult> scanSubscription;
   bool _started = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,8 +101,15 @@ class _DiscoverModePageState extends State<DiscoverModePage> {
 
   _handleMode(bool needStart) => needStart ? start() : stop();
 
-  start() {}
-  stop() {}
+  start() {
+    scanSubscription = _ble.scan().listen((scanResult) {
+        // do something with scan result
+        print('resulted');
+      });
+  }
+  stop() {
+    scanSubscription.cancel();
+  }
 }
 
 class AdvertiseModePage extends StatefulWidget {
@@ -105,6 +118,7 @@ class AdvertiseModePage extends StatefulWidget {
 }
 
 class _AdvertiseModePageState extends State<AdvertiseModePage> {
+  // FlutterBle _ble = FlutterBle.instance;
   bool _started = false;
 
   @override
